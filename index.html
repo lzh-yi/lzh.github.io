@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>满减优惠活动参与商家</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF5A5F;
+            --secondary-color: #00A699;
+            --accent-color: #FC642D;
+            --dark-color: #2D2926;
+            --light-color: #F7F7F7;
+            --gradient: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 20px;
+            margin: 0 auto;
+        }
+        
+        /* 3D浮动标题效果 */
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 10px 30px rgba(255, 90, 95, 0.3);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            animation: shine 8s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(30deg) translate(-30%, -30%); }
+            100% { transform: rotate(30deg) translate(30%, 30%); }
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transform: translateZ(20px);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 15px;
+            transform: translateZ(15px);
+        }
+        
+        .activity-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(5px);
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            border: 1px solid rgba(255,255,255,0.3);
+            transform: translateZ(10px);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: translateZ(10px) scale(1); }
+            50% { transform: translateZ(10px) scale(1.05); }
+            100% { transform: translateZ(10px) scale(1); }
+        }
+        
+        .activity-tag i {
+            margin-right: 8px;
+        }
+        
+        /* 搜索框3D效果 */
+        .search-box {
+            position: relative;
+            margin: 25px 0;
+            perspective: 1000px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            background-color: white;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
+            padding-left: 55px;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .search-box input:focus {
+            transform: translateY(-2px) translateZ(10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        /* 商家卡片3D悬停效果 */
+        .store-list {
+            display: grid;
+            grid-gap: 20px;
+            perspective: 1000px;
+        }
+        
+        .store-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            will-change: transform;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        
+        .store-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--gradient);
+            transform: translateZ(-1px);
+        }
+        
+        .store-card:hover {
+            transform: translateY(-8px) rotateX(5deg) rotateY(2deg) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .store-card:hover .store-name {
+            color: var(--primary-color);
+        }
+        
+        .store-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+        
+        .store-name i {
+            margin-right: 12px;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+        
+        .store-info {
+            margin-left: 30px;
+        }
+        
+        .store-address, .store-tel, .store-hours {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: #666;
+        }
+        
+        .store-address i, .store-tel i, .store-hours i {
+            margin-right: 12px;
+            color: var(--secondary-color);
+            min-width: 18px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        /* 活动标签动画 */
+        .discount-badge {
+            display: inline-flex;
+            align-items: center;
+            background: var(--gradient);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(255, 90, 95, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .discount-badge i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+        
+        /* 浮动粒子背景 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float-particle 15s infinite linear;
+        }
+        
+        @keyframes float-particle {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+        
+        /* 底部波浪效果 */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px 20px;
+            color: #888;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' fill='%23ffffff' opacity='.25'/%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' fill='%23ffffff' opacity='.5'/%3E%3Cpath d='M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z' fill='%23ffffff'/%3E%3C/svg%3E");
+            background-size: cover;
+            transform: rotate(180deg);
+        }
+        
+        /* 入场动画 */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .store-card {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .store-card:nth-child(1) { animation-delay: 0.1s; }
+        .store-card:nth-child(2) { animation-delay: 0.2s; }
+        .store-card:nth-child(3) { animation-delay: 0.3s; }
+        .store-card:nth-child(4) { animation-delay: 0.4s; }
+        .store-card:nth-child(5) { animation-delay: 0.5s; }
+        
+        /* 加载动画 */
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loader i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 暗黑模式切换 */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .store-card {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        body.dark-mode .store-address,
+        body.dark-mode .store-tel,
+        body.dark-mode .store-hours {
+            color: #b0b0b0;
+        }
+        
+        body.dark-mode .search-box input {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .store-name {
+                font-size: 1.15rem;
+            }
+            
+            .store-info {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 浮动粒子背景 -->
+    <div class="particles" id="particles"></div>
+    
+    <header>
+        <div class="container">
+            <h1>满减优惠活动</h1>
+            <p class="subtitle">扫码消费享优惠 精选商家任您选</p>
+            <div class="activity-tag">
+                <i class="fas fa-tag"></i> 限时特惠 · 参与商家
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="搜索商家名称或地址..." id="searchInput">
+        </div>
+        
+        <div class="loader" id="loader">
+            <i class="fas fa-spinner"></i>
+        </div>
+        
+        <div class="store-list" id="storeList">
+            <div class="store-card">
+                <div class="store-name"><i class="fas fa-store-alt"></i> 优品鲜果超市</div>
+                <div class="store-info">
+                    <div class="store-address"><i class="fas fa-map-marker-alt"></i> 人民路123号购物中心B1层</div>
+                    <div class="store-tel"><i class="fas fa-phone-alt"></i> 138-1234-5678</div>
+                    <div class="store-hours"><i class="far fa-clock"></i> 营业时间: 8:00-22:00</div>
+                    <div class="discount-badge"><i class="fas fa-percentage"></i> 满100减20 | 满200减50</div>
+                </div>
+            </div>
+            
+            <div class="store-card">
+                <div class="store-name"><i class="fas fa-utensils"></i> 香满楼餐厅</div>
+                <div class="store-info">
+                    <div class="store-address"><i class="fas fa-map-marker-alt"></i> 中山路456号2楼</div>
+                    <div class="store-tel"><i class="fas fa-phone-alt"></i> 139-8765-4321</div>
+                    <div class="store-hours"><i class="far fa-clock"></i> 营业时间: 10:30-21:30</div>
+                    <div class="discount-badge"><i class="fas fa-percentage"></i> 满150减30 | 满300减80</div>
+                </div>
+            </div>
+            
+            <div class="store-card">
+                <div class="store-name"><i class="fas fa-tshirt"></i> 时尚精品服饰</div>
+                <div class="store-info">
+                    <div class="store-address"><i class="fas fa-map-marker-alt"></i> 解放路789号时尚广场3F-12</div>
+                    <div class="store-tel"><i class="fas fa-phone-alt"></i> 137-1122-3344</div>
+                    <div class="store-hours"><i class="far fa-clock"></i> 营业时间: 9:30-21:00</div>
+                    <div class="discount-badge"><i class="fas fa-percentage"></i> 满200减50 | 满500减150</div>
+                </div>
+            </div>
+            
+            <div class="store-card">
+                <div class="store-name"><i class="fas fa-book-open"></i> 悦读书店</div>
+                <div class="store-info">
+                    <div class="store-address"><i class="fas fa-map-marker-alt"></i> 文化路101号</div>
+                    <div class="store-tel"><i class="fas fa-phone-alt"></i> 136-5566-7788</div>
+                    <div class="store-hours"><i class="far fa-clock"></i> 营业时间: 9:00-20:30</div>
+                    <div class="discount-badge"><i class="fas fa-percentage"></i> 满80减15 | 满150减30</div>
+                </div>
+            </div>
+            
+            <div class="store-card">
+                <div class="store-name"><i class="fas fa-coffee"></i> 甜蜜时光咖啡</div>
+                <div class="store-info">
+                    <div class="store-address"><i class="fas fa-map-marker-alt"></i> 滨海路202号</div>
+                    <div class="store-tel"><i class="fas fa-phone-alt"></i> 135-6677-8899</div>
+                    <div class="store-hours"><i class="far fa-clock"></i> 营业时间: 8:30-23:00</div>
+                    <div class="discount-badge"><i class="fas fa-percentage"></i> 满50减10 | 满100减25</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 满减优惠活动组委会</p>
+        <p>客服热线: 400-123-4567</p>
+    </footer>
+    
+    <div class="dark-mode-toggle" id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <script>
+        // 创建浮动粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 随机大小 (2px 到 8px)
+                const size = Math.random() * 6 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // 随机位置
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // 随机动画延迟
+                particle.style.animationDelay = `${Math.random() * 15}s`;
+                
+                // 随机透明度
+                particle.style.opacity = Math.random() * 0.2 + 0.05;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const storeCards = document.querySelectorAll('.store-card');
+            let visibleCount = 0;
+            
+            storeCards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if(text.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // 如果没有结果，显示提示
+            if (visibleCount === 0 && searchTerm.length > 0) {
+                // 可以在这里添加"没有找到商家"的提示
+            }
+        });
+        
+        // 暗黑模式切换
+        document.getElementById('darkModeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = this.querySelector('i');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+        
+        // 模拟加载效果
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                createParticles();
+            }, 500);
+        });
+        
+        // 3D悬停效果增强
+        document.querySelectorAll('.store-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+                card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            });
+            
+            card.addEventListener('mouseenter', () => {
+                card.style.transition = 'none';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.transform = 'translateY(-8px)';
+            });
+        });
+    </script>
+</body>
+</html>
